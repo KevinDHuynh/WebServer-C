@@ -101,7 +101,12 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 */
 	/* TODO 5 */
 
+	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
+		printf("%s\n", "directory");
+		strcpy(fullPathToFile, concat(fullPathToFile, "index.html"));
+	}
 
+	printf("%s\n", fullPathToFile);
 
 	/*
 	 * 1. Send the header (use write())
@@ -111,7 +116,10 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 */
 
 	 /* TODO 6 */
-
+	write(sock, Header, sizeof(Header));
+	int c;
+	FILE* file;
+	const char* dot;
 }
 
 
@@ -122,6 +130,20 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
+	int i;
+	int size = 1024;
+	char fn[size];
+	for (i = 0; i < size; i++) {
+		if (i >= 5) {
+			fn[i - 5] = buff[i];
+			printf("%c\n", fn[i - 5]);
+			if (fn[i - 5] == ' ') {
+				fn[i - 5] = '\0';
+				break;
+			}
+		}
+	}
+	strcpy(req, fn);
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -180,8 +202,14 @@ int main(int argc, char **argv, char **environ) {
 	/*
 	 * Create our socket, bind it, listen
 	 */
-
+	
 	/* TODO 1 */
+	socket = socket(AF_INET, SOCK_STREAM, 0);
+
+	memset(&server_addr, 0, sizeof(server_addr));
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+	server_addr.sin_port = htons(PORT);
 
 
 	signal(SIGCHLD, SIG_IGN);
@@ -212,8 +240,9 @@ int main(int argc, char **argv, char **environ) {
 		 * child to communicate to the client (browser)
 		 */
 		 /* TODO 2 */
+		newsock = accept(socket, (struct sockaddr*) & client_addr, &client_len);
 
-    		if (newsock < 0) {
+    	if (newsock < 0) {
 			perror("accept");
 			exit(-1);
 		}
@@ -252,6 +281,27 @@ int main(int argc, char **argv, char **environ) {
 //			Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, * /*
 //
 //
+			size_t read_size;
+			while (read_size = recv(newsock, buff, 1024, 0) > 0) {
+				break;
+			}
+
+			if (read_size == 0){
+				puts("disconnected");
+				fflush(stdout);
+			}
+			else if (read_size == -1){
+				perror("recv failed");
+			}
+
+
+
+
+
+
+
+
+
 // Write to client
 //
 //			You should write to the client an HTTP response and then the
