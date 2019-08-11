@@ -68,11 +68,11 @@ int TypeOfFile(char *fullPathToFile) {
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
-        int f;
+    int f;
 	char fullPathToFile[256];
 	char Header[1024];
-        int s;
-        char buffer[10];
+    int s;
+    char buffer[1024];
 	int fret;		/* return value of TypeOfFile() */
 
 
@@ -100,13 +100,18 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 *   or a reqular file
 	 */
 	/* TODO 5 */
-
-	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
-		printf("%s\n", "directory");
-		strcpy(fullPathToFile, concat(fullPathToFile, "index.html"));
+	
+	char *type = typeOfFile(fullPathToFile);
+	
+	if(type == DIRECTORY){
+		sprintf(fullPathToFile, "%s%s", fullPathToFile, "index.html");
 	}
-
-	printf("%s\n", fullPathToFile);
+	else if(type == REG_FILE){
+		break;
+	}
+	else{
+		
+	}
 
 	/*
 	 * 1. Send the header (use write())
@@ -116,10 +121,16 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 */
 
 	 /* TODO 6 */
-	write(sock, Header, sizeof(Header));
-	int c;
-	FILE* file;
-	const char* dot;
+	
+	write(sock,Header,sizeof(Header));
+	
+	f = open(fullPathToFile, "r");
+	
+	write(sock,buffer,1024);
+	
+	close(sock);
+	
+	
 }
 
 
@@ -130,20 +141,16 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
-	int i;
-	int size = 1024;
-	char fn[size];
-	for (i = 0; i < size; i++) {
-		if (i >= 5) {
-			fn[i - 5] = buff[i];
-			printf("%c\n", fn[i - 5]);
-			if (fn[i - 5] == ' ') {
-				fn[i - 5] = '\0';
-				break;
-			}
-		}
+	int i = 0;
+	int j = 5;
+	while(buff[j] != 32{
+		req[i] = buff[j];
+		i++;
+		j++;
 	}
-	strcpy(req, fn);
+	req[i] = '0';
+	return;
+	//END TODO 4
 }
 
 ////////////////////////////////////////////////////////////////////
@@ -202,16 +209,28 @@ int main(int argc, char **argv, char **environ) {
 	/*
 	 * Create our socket, bind it, listen
 	 */
-	
+
 	/* TODO 1 */
-	socket = socket(AF_INET, SOCK_STREAM, 0);
+	if ((sockid = socket(AF_INET, SOCK_STREAM, 0)) < 0) {
+		perror("Could not create socket");
+		exit(0);
+	}
+	
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+    server_addr.sin_port = htons(PORT);
 
-	memset(&server_addr, 0, sizeof(server_addr));
-	server_addr.sin_family = AF_INET;
-	server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-	server_addr.sin_port = htons(PORT);
+    if (bind(sockid, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+        perror("Could not bind socket");
+        exit(1);
+    }
+    if( (listen(sockid, 5)) < 0){
+        perror("Could not listen");
+        exit(0);
+    }
 
-
+	//END TODO 1
+	
 	signal(SIGCHLD, SIG_IGN);
 
 
@@ -240,9 +259,12 @@ int main(int argc, char **argv, char **environ) {
 		 * child to communicate to the client (browser)
 		 */
 		 /* TODO 2 */
-		newsock = accept(socket, (struct sockaddr*) & client_addr, &client_len);
-
-    	if (newsock < 0) {
+		if((newsock = accept(sockid, (struct socaddr *)&client_addr,&client_len)) < 0){
+			perror("Could not accept connection");
+			exit(0);
+		}
+		//END TODO 2
+    		if (newsock < 0) {
 			perror("accept");
 			exit(-1);
 		}
@@ -258,7 +280,7 @@ int main(int argc, char **argv, char **environ) {
 			 * I am the Child
 			 */
 			int r;
-      			char buff[1024];
+      		char buff[1024];
 			int read_so_far = 0;
 			char ref[1024], rowRef[1024];
 
@@ -271,7 +293,15 @@ int main(int argc, char **argv, char **environ) {
 			 * 'use a while loop'
 			 */
 			/* TODO 3 */
-
+			if((read(newsock,ref,1024)) < 0){
+				perror("could not read client request");
+			}
+			r = 0;
+			while(ref[r] != 0){
+				buff[r] = ref[r];
+				r++;
+			}
+			//END TODO
 //
 // What you may get from the client:
 //			GET / HTTP/1.0
@@ -280,27 +310,7 @@ int main(int argc, char **argv, char **environ) {
 //			Host: spiff:6789
 //			Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, * /*
 //
-//
-			size_t read_size;
-			while (read_size = recv(newsock, buff, 1024, 0) > 0) {
-				break;
-			}
-
-			if (read_size == 0){
-				puts("disconnected");
-				fflush(stdout);
-			}
-			else if (read_size == -1){
-				perror("recv failed");
-			}
-
-
-
-
-
-
-
-
+			
 
 // Write to client
 //
