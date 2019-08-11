@@ -101,7 +101,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 */
 	/* TODO 5 */
 	
-	char *type = typeOfFile(fullPathToFile);
+	char *type = TypeOfFile(fullPathToFile);
 	
 	if(type == DIRECTORY){
 		sprintf(fullPathToFile, "%s%s", fullPathToFile, "index.html");
@@ -143,7 +143,7 @@ void ExtractFileRequest(char *req, char *buff) {
 	/* TODO 4  */
 	int i = 0;
 	int j = 5;
-	while(buff[j] != 32{
+	while(buff[j] != 32){
 		req[i] = buff[j];
 		i++;
 		j++;
