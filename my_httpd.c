@@ -142,13 +142,11 @@ void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
 	int i = 0;
-	int j = 5;
-	while(buff[j] != 32){
-		req[i] = buff[j];
-		i++;
+	while(buff[5+i] != ' '){
+		req[i] = buff[5+i];
 		j++;
 	}
-	req[i] = '0';
+	req[i] = '\0';
 	return;
 	//END TODO 4
 }
