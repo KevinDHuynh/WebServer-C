@@ -104,6 +104,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	char *type = TypeOfFile(fullPathToFile);
 	
 	if(type == DIRECTORY){
+		printf("%s\n", "directory");
 		sprintf(fullPathToFile, "%s%s", fullPathToFile, "index.html");
 	}
 	else if(type == REG_FILE){
@@ -112,6 +113,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	else{
 		//requested something else
 	}
+	printf("%s\n", fullPathToFile);
 
 	/*
 	 * 1. Send the header (use write())
@@ -322,7 +324,7 @@ int main(int argc, char **argv, char **environ) {
 				perror("could not read client request");
 			}
 			r = 0;
-			while(ref[r] != 0){
+			while(ref[r] != '\0'){
 				buff[r] = ref[r];
 				r++;
 			}
