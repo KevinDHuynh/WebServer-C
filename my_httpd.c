@@ -2,7 +2,7 @@
 //
 // To compile: 			gcc -o my_httpd my_httpd.c -lnsl -lsocket
 //
-// To start your server:	./my_httpd 8080 ./www			
+// To start your server:	./my_httpd 8080 ./www
 //
 // To Kill your server:		kill_my_httpd
 //
@@ -90,7 +90,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	sprintf(fullPathToFile, "%s/%s/%s", home, content, fileToSend);
 
 
-	
+
 	/*
 	 * - If the requested file is a directory, append the 'index.html'
 	 *   file to the end of the fullPathToFile
@@ -100,7 +100,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 *   or a reqular file
 	 */
 	/* TODO 5 */
-	
+
 	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
 		char *temp = malloc(strlen(fullPathToFile)+strlen("index.html")+1);
 		strcpy(temp, fullPathToFile);
@@ -116,15 +116,15 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 */
 
 	 /* TODO 6 */
-	
+
 	write(sock,Header,sizeof(Header));
-	
+
 	//open requested file
-	
+
 	int c;
 	FILE *file;
 	const char *dot = strrchr(fullPathToFile,'.');
-	
+
 	if((dot != NULL ) && (strcmp(dot,".cgi") == 0) ) {
 		file = popen(fullPathToFile, "r");
 		int  i = 0;
@@ -147,30 +147,38 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		}
 		fclose(file);
 	}
-	
-	
+
+
 	//send file
 	write(sock,buffer,1024);
-	
+
 	close(sock);
-	
-	
+
+
 }
 
 
 ////////////////////////////////////////////////////////////////////
-// Extract the file request from the request lines the client sent 
+// Extract the file request from the request lines the client sent
 // to us.  Make sure you NULL terminate your result.
 ////////////////////////////////////////////////////////////////////
 void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
-	int i=0;
-	while( buff[5+i] != ' ') {
-		req[i] = buff[5+i];
-		i++;
+  int i;
+	int size = 1024;
+	char fn[size];
+	for (i = 0; i < size; i++) {
+			if (i >= 5) {
+				fn[i - 5] = buff[i];
+				printf("%c\n", fn[i - 5]);
+				if (fn[i - 5] == ' ') {
+					fn[i - 5] = '\0';
+					break;
+				}
+			}
 	}
-	req[i] = '\0';
+	strcpy(req, fn);
 	//END TODO 4
 }
 
@@ -180,27 +188,27 @@ int main(int argc, char **argv, char **environ) {
   	pid_t pid;		/* pid of child */
 	int sockid;		/* our initial socket */
 	int PORT;		/* Port number, used by 'bind' */
-	char content[128];	/* Your directory that contains your web 
-				   content such as .www in 
+	char content[128];	/* Your directory that contains your web
+				   content such as .www in
 				   your home directory */
 	char myhome[128];	/* Your home directory */
 				/* (gets filled in by GetMyHomeDir() */
-	/* 
+	/*
 	 * structs used for bind, accept..
 	 */
-  	struct sockaddr_in server_addr, client_addr; 
+  	struct sockaddr_in server_addr, client_addr;
 
 	char file_request[256];	/* where we store the requested file name */
         int one=1;		/* used to set socket options */
 
 
-	/* 
-	 * Get my home directory from the environment 
+	/*
+	 * Get my home directory from the environment
 	 */
-	GetMyHomeDir(myhome, environ);	
+	GetMyHomeDir(myhome, environ);
 
 	if( argc != 3 ) {
-		fprintf(stderr, "USAGE: %s <port number> <content directory>\n", 
+		fprintf(stderr, "USAGE: %s <port number> <content directory>\n",
 								argv[0]);
 		exit(-1);
 	}
@@ -236,7 +244,7 @@ int main(int argc, char **argv, char **environ) {
 		perror("Could not create socket");
 		exit(0);
 	}
-	
+
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     server_addr.sin_port = htons(PORT);
@@ -251,22 +259,22 @@ int main(int argc, char **argv, char **environ) {
     }
 
 	//END TODO 1
-	
+
 	signal(SIGCHLD, SIG_IGN);
 
 
-	/* 
+	/*
 	 * - accept a new connection and fork.
 	 * - If you are the child process,  process the request and exit.
-	 * - If you are the parent close the socket and come back to 
+	 * - If you are the parent close the socket and come back to
          *   accept another connection
 	 */
   	while (1) {
-		/* 
+		/*
 		 * socket that will be used for communication
-		 * between the client and this server (the child) 
+		 * between the client and this server (the child)
 		 */
-		int newsock;		
+		int newsock;
 
 		/*
 		 * Get the size of this structure, could pass NULL if we
@@ -276,7 +284,7 @@ int main(int argc, char **argv, char **environ) {
 
 		/*
 		 * Accept a connection from a client (a web browser)
-		 * accept the new connection. newsock will be used for the 
+		 * accept the new connection. newsock will be used for the
 		 * child to communicate to the client (browser)
 		 */
 		 /* TODO 2 */
@@ -330,7 +338,7 @@ int main(int argc, char **argv, char **environ) {
 //			Host: spiff:6789
 //			Accept: image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, * /*
 //
-			
+
 
 // Write to client
 //
