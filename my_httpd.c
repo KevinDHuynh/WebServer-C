@@ -105,7 +105,6 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		strcpy(fullPathToFile, strcat(fullPathToFile, "index.html"));
 		strcpy(fullPathToFile, strcat(fullPathToFile, '\0'));
 	}
-	printf("%s\n", fullPathToFile);
 
 	/*
 	 * 1. Send the header (use write())
@@ -146,7 +145,9 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		}
 		fclose(file);
 	}
-	//write
+	
+	
+	//send file
 	write(sock,buffer,1024);
 	
 	close(sock);
@@ -162,21 +163,12 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
-	int i;
-	int size = 1024;
-	char fn[size];
-	for (i = 0; i < size; i++) {
-		//printf("%c\t",buff[i]);
-			if (i >= 5) {
-				fn[i - 5] = buff[i];
-				printf("%c\n", fn[i - 5]);
-				if (fn[i - 5] == ' ') {
-					fn[i - 5] = '\0';
-					break;
-				}
-			}
+	int i=0;
+	while( buff[5+i] != ' ') {
+		req[i] = buff[5+i];
+		i++;
 	}
-	strcpy(req, fn);
+	req[i] = '\0';
 	//END TODO 4
 }
 
