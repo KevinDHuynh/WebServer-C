@@ -102,8 +102,10 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	/* TODO 5 */
 	
 	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
-		strcpy(fullPathToFile, strcat(fullPathToFile, "index.html"));
-		strcpy(fullPathToFile, strcat(fullPathToFile, '\0'));
+		char *temp = malloc(strlen(fullPathToFile)+strlen("index.html")+1);
+		strcpy(temp, fullPathToFile);
+		strcat(temp, "index.html");
+		strcpy(fullPathToFile, temp));
 	}
 
 	/*
