@@ -286,10 +286,7 @@ int main(int argc, char **argv, char **environ) {
 		 * child to communicate to the client (browser)
 		 */
 		 /* TODO 2 */
-		if((newsock = accept(sockid, (struct socaddr *)&client_addr,&client_len)) < 0){
-			perror("Could not accept connection");
-			exit(0);
-		}
+		newsock = accept(sockid, (struct socaddr *)&client_addr,&client_len);
 		//END TODO 2
     		if (newsock < 0) {
 			perror("accept");
