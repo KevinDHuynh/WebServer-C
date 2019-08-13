@@ -146,7 +146,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		}
 		fclose(file);
 	}
-	
+	//write
 	write(sock,buffer,1024);
 	
 	close(sock);
@@ -162,13 +162,21 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
-	int i = 0;
-	while(buff[5+i] != ' '){
-		req[i] = buff[5+i];
-		i++;
+	int i;
+	int size = 1024;
+	char fn[size];
+	for (i = 0; i < size; i++) {
+		//printf("%c\t",buff[i]);
+			if (i >= 5) {
+				fn[i - 5] = buff[i];
+				printf("%c\n", fn[i - 5]);
+				if (fn[i - 5] == ' ') {
+					fn[i - 5] = '\0';
+					break;
+				}
+			}
 	}
-	req[i] = '\0';
-	return;
+	strcpy(req, fn);
 	//END TODO 4
 }
 
@@ -297,7 +305,7 @@ int main(int argc, char **argv, char **environ) {
 			 */
 			int r;
       		char buff[1024];
-			int read_so_far = 0;
+			size_t read_so_far = 0;
 			char ref[1024], rowRef[1024];
 
 			close(sockid);
@@ -316,7 +324,7 @@ int main(int argc, char **argv, char **environ) {
 		        puts("Client disconnected");
 		        fflush(stdout);
 		    }
-		    else if(read_so_far == -1){
+		    else if(read_so_far < 0){
 		        perror("recv failed");
 		    }
 			//END TODO
