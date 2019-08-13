@@ -105,7 +105,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		char *temp = malloc(strlen(fullPathToFile)+strlen("index.html")+1);
 		strcpy(temp, fullPathToFile);
 		strcat(temp, "index.html");
-		strcpy(fullPathToFile, temp));
+		strcpy(fullPathToFile, temp);
 	}
 
 	/*
