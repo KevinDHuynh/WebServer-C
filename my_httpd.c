@@ -64,32 +64,30 @@ int TypeOfFile(char *fullPathToFile) {
 	return(ERROR_FILE);
 }
 
-
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
-    int f;
+  int f;
 	char fullPathToFile[256];
-	char Header[1024];
-    int s;
-    char buffer[1024];
+  size_t BUFFER_SIZE = 1024;
+	char Header[BUFFER_SIZE];
+  int s;
+  char buffer[BUFFER_SIZE];
 	int fret;		/* return value of TypeOfFile() */
 
-
+  //used to avoid data corruption when sending files
+  memset(Header, 0, BUFFER_SIZE);
+	memset(buffer, 0, BUFFER_SIZE);
 
 	/*
 	 * Build the header
 	 */
-	strcpy(Header, "HTTP/1.0 200 OK\nContent-length: 112032\nContent-type: text/html\n\n");
-
-
+	strcpy(Header, "HTTP/1.0 200 OK\nContent-type: text/html\n\n");
 
 	/*
 	 * Build the full path to the file
 	 */
 	sprintf(fullPathToFile, "%s/%s/%s", home, content, fileToSend);
-
-
 
 	/*
 	 * - If the requested file is a directory, append the 'index.html'
@@ -100,14 +98,14 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 *   or a reqular file
 	 */
 	/* TODO 5 */
-
-	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
-		char *temp = malloc(strlen(fullPathToFile)+strlen("index.html")+1);
+  fret = TypeOfFile(fullPathToFile);
+	if (fret == DIRECTORY) {
+    char *temp =malloc(strlen(fullPathToFile)+strlen("index.html")+1);
 		strcpy(temp, fullPathToFile);
 		strcat(temp, "index.html");
 		strcpy(fullPathToFile, temp);
 	}
-
+  //END TODO 5//
 	/*
 	 * 1. Send the header (use write())
 	 * 2. open the requested file (use open())
@@ -148,12 +146,10 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		fclose(file);
 	}
 
-
 	//send file
-	write(sock,buffer,1024);
-
+	write(sock,buffer,BUFFER_SIZE);
+  //close file
 	close(sock);
-
 
 }
 
@@ -165,20 +161,12 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 void ExtractFileRequest(char *req, char *buff) {
 
 	/* TODO 4  */
-  int i;
-	int size = 1024;
-	char fn[size];
-	for (i = 0; i < size; i++) {
-			if (i >= 5) {
-				fn[i - 5] = buff[i];
-				printf("%c\n", fn[i - 5]);
-				if (fn[i - 5] == ' ') {
-					fn[i - 5] = '\0';
-					break;
-				}
-			}
-	}
-	strcpy(req, fn);
+  int i=0;
+  while(buff[5+i]!=' '){
+    req[i] = buff[5+i];
+    i++;
+  }
+  req[i] = '\0';
 	//END TODO 4
 }
 
@@ -245,18 +233,18 @@ int main(int argc, char **argv, char **environ) {
 		exit(0);
 	}
 
-    server_addr.sin_family = AF_INET;
-    server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
-    server_addr.sin_port = htons(PORT);
+  server_addr.sin_family = AF_INET;
+  server_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+  server_addr.sin_port = htons(PORT);
 
-    if (bind(sockid, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
-        perror("Could not bind socket");
-        exit(0);
-    }
-    if( (listen(sockid, 5)) < 0){
-        perror("Could not listen");
-        exit(0);
-    }
+  if (bind(sockid, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
+      perror("Could not bind socket");
+      exit(0);
+  }
+  if( (listen(sockid, 5)) < 0){
+      perror("Could not listen");
+      exit(0);
+  }
 
 	//END TODO 1
 
@@ -280,7 +268,7 @@ int main(int argc, char **argv, char **environ) {
 		 * Get the size of this structure, could pass NULL if we
 		 * don't care about who the client is.
 		 */
-   		int client_len = sizeof(client_addr);
+   	int client_len = sizeof(client_addr);
 
 		/*
 		 * Accept a connection from a client (a web browser)
@@ -298,7 +286,7 @@ int main(int argc, char **argv, char **environ) {
 		if ( (pid = fork()) < 0) {
 			perror("Cannot fork");
 			exit(0);
-  		}
+  	}
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 		else if( pid == 0 ) {
@@ -306,11 +294,9 @@ int main(int argc, char **argv, char **environ) {
 			 * I am the Child
 			 */
 			int r;
-      		char buff[1024];
-			size_t read_so_far = 0;
+      char buff[1024];
+			int read_so_far = 0;
 			char ref[1024], rowRef[1024];
-
-			close(sockid);
 
 			memset(buff, 0, 1024);
 
@@ -322,12 +308,8 @@ int main(int argc, char **argv, char **environ) {
 		    while(read_so_far = recv(newsock,buff,1024,0) > 0) {
 		    	break;
 		    }
-		    if(read_so_far == 0){
-		        puts("Client disconnected");
-		        fflush(stdout);
-		    }
-		    else if(read_so_far < 0){
-		        perror("recv failed");
+		    if(read_so_far < 0){
+		        perror("Could not Recv");
 		    }
 			//END TODO
 //
