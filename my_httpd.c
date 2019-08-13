@@ -317,14 +317,16 @@ int main(int argc, char **argv, char **environ) {
 			 * 'use a while loop'
 			 */
 			/* TODO 3 */
-			if((read(newsock,ref,1024)) < 0){
-				perror("could not read client request");
-			}
-			r = 0;
-			while(ref[r] != '\0'){
-				buff[r] = ref[r];
-				r++;
-			}
+		    while(read_so_far = recv(newsock,buff,1024,0) > 0) {
+		    	break;
+		    }
+		    if(read_so_far == 0){
+		        puts("Client disconnected");
+		        fflush(stdout);
+		    }
+		    else if(read_so_far == -1){
+		        perror("recv failed");
+		    }
 			//END TODO
 //
 // What you may get from the client:
