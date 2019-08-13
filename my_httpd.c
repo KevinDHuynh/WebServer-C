@@ -107,10 +107,10 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		sprintf(fullPathToFile, "%s%s", fullPathToFile, "index.html");
 	}
 	else if(type == REG_FILE){
-		break;
+		//do nothing
 	}
 	else{
-		
+		//requested something else
 	}
 
 	/*
@@ -144,7 +144,7 @@ void ExtractFileRequest(char *req, char *buff) {
 	int i = 0;
 	while(buff[5+i] != ' '){
 		req[i] = buff[5+i];
-		j++;
+		i++;
 	}
 	req[i] = '\0';
 	return;
@@ -220,7 +220,7 @@ int main(int argc, char **argv, char **environ) {
 
     if (bind(sockid, (struct sockaddr *) &server_addr, sizeof(server_addr)) < 0) {
         perror("Could not bind socket");
-        exit(1);
+        exit(0);
     }
     if( (listen(sockid, 5)) < 0){
         perror("Could not listen");
