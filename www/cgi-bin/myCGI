@@ -1,0 +1,35 @@
+#!/bin/ksh
+
+echo "<HTML>"
+echo "<HEAD>"
+echo "<TITLE>CGI Example</TITLE>"
+echo "</HEAD>"
+echo "<BODY>"
+
+echo "<H1>This is a simple cgi script</H1>"
+
+dd=$(/bin/date)
+my_homedir=$(echo $HOME)
+archey=$(archey)
+
+echo "<table border=1>"
+
+echo "<tr><td>"
+echo "<font color=black><B> $dd </B></font>"
+echo "</td></tr>"
+
+echo "<tr><td>"
+echo "My home directory is: <B>$my_homedir</B>"
+echo "</td></tr>"
+
+echo "<tr><td>"
+echo "This webserver is running on: <B>$archey</B>"
+echo "</td></tr>"
+
+
+echo "</table>"
+
+
+
+echo "</BODY>"
+echo "</HTML>"
