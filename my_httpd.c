@@ -2,7 +2,7 @@
 //
 // To compile: 			gcc -o my_httpd my_httpd.c -lnsl -lsocket
 //
-// To start your server:	./my_httpd 8080 .www			
+// To start your server:	./my_httpd 8080 ./www			
 //
 // To Kill your server:		kill_my_httpd
 //
@@ -101,17 +101,9 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	 */
 	/* TODO 5 */
 	
-	char *type = TypeOfFile(fullPathToFile);
-	
-	if(type == DIRECTORY){
+	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
 		printf("%s\n", "directory");
 		strcpy(fullPathToFile, strcat(fullPathToFile, "index.html"));
-	}
-	else if(type == REG_FILE){
-		//do nothing
-	}
-	else{
-		//requested something else
 	}
 	printf("%s\n", fullPathToFile);
 
@@ -286,9 +278,9 @@ int main(int argc, char **argv, char **environ) {
 		 * child to communicate to the client (browser)
 		 */
 		 /* TODO 2 */
-		newsock = accept(sockid, (struct socaddr *)&client_addr,&client_len);
+		newsock = accept(sockid,(struct socaddr *)&client_addr,&client_len);
 		//END TODO 2
-    		if (newsock < 0) {
+    	if (newsock < 0) {
 			perror("accept");
 			exit(-1);
 		}
