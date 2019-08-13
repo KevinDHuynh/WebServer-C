@@ -49,7 +49,7 @@ int TypeOfFile(char *fullPathToFile) {
 
         if( stat(fullPathToFile, &buf) != 0 ) {
 		perror("stat()");
-		fprintf(stderr, "[ERROR] stat() on file: |%s|\n", 
+		fprintf(stderr, "[ERROR] stat() on file: |%s|\n",
 						fullPathToFile);
 		fflush(stderr);
                 exit(-1);
@@ -58,7 +58,7 @@ int TypeOfFile(char *fullPathToFile) {
 
         if( S_ISREG(buf.st_mode) )
 		return(REG_FILE);
-        else if( S_ISDIR(buf.st_mode) ) 
+        else if( S_ISDIR(buf.st_mode) )
 		return(DIRECTORY);
 
 	return(ERROR_FILE);
@@ -92,18 +92,18 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 
 	
 	/*
-	 * - If the requested file is a directory, append the 'index.html' 
-    	 *   file to the end of the fullPathToFile 
+	 * - If the requested file is a directory, append the 'index.html'
+	 *   file to the end of the fullPathToFile
 	 *   (Use TypeOfFile(fullPathToFile))
 	 * - If the requested file is a regular file, do nothing and proceed
-	 * - else your client requested something other than a directory 
+	 * - else your client requested something other than a directory
 	 *   or a reqular file
 	 */
 	/* TODO 5 */
 	
 	if (TypeOfFile(fullPathToFile) == DIRECTORY) {
-		printf("%s\n", "directory");
 		strcpy(fullPathToFile, strcat(fullPathToFile, "index.html"));
+		strcpy(fullPathToFile, strcat(fullPathToFile, '\0'));
 	}
 	printf("%s\n", fullPathToFile);
 
