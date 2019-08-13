@@ -124,7 +124,34 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	
 	write(sock,Header,sizeof(Header));
 	
-	f = open(fullPathToFile, "r");
+	//open requested file
+	
+	int c;
+	FILE *file;
+	const char *dot = strrchr(fullPathToFile,'.');
+	
+	if((dot != NULL ) && (strcmp(dot,".cgi") == 0) ) {
+		file = popen(fullPathToFile, "r");
+		int  i = 0;
+		if (file) {
+			while ((c = getc(file)) != EOF) {
+			buffer[i] = c;
+			i++;
+			}
+		}
+		pclose(file);
+	  }
+	else {
+		file = fopen(fullPathToFile, "r");
+		int  i = 0;
+		if (file) {
+			while ((c = getc(file)) != EOF) {
+				buffer[i] = c;
+				i++;
+			}
+		}
+		fclose(file);
+	}
 	
 	write(sock,buffer,1024);
 	
