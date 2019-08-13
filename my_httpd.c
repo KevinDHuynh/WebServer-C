@@ -105,7 +105,7 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	
 	if(type == DIRECTORY){
 		printf("%s\n", "directory");
-		strcpy(fullPathToFile, concat(fullPathToFile, "index.html"));
+		strcpy(fullPathToFile, strcat(fullPathToFile, "index.html"));
 	}
 	else if(type == REG_FILE){
 		//do nothing
