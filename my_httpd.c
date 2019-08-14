@@ -173,7 +173,7 @@ void ExtractFileRequest(char *req, char *buff) {
 ////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////
 int main(int argc, char **argv, char **environ) {
-  	pid_t pid;		/* pid of child */
+  pid_t pid;		/* pid of child */
 	int sockid;		/* our initial socket */
 	int PORT;		/* Port number, used by 'bind' */
 	char content[128];	/* Your directory that contains your web
