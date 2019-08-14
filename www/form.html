@@ -1,12 +1,12 @@
 <HTML>
 <HEAD>
 
-<TITLE></TITLE>
+<TITLE>Form</TITLE>
 </HEAD>
-<BODY bgcolor="#4444aa" text="#bbffbb">
+<center>
+<BODY>
 
 <H2>FORM</H2>
-<HR>
 
 <FORM action="http://atlas.cs.uga.edu:9000/cgi-bin/test1" method="get">
     <P>
@@ -14,18 +14,85 @@
     <LABEL>Last name: </LABEL>  <INPUT type="text" name="lastName"><BR>
     <LABEL>Email:     </LABEL>  <INPUT type="text" name="email"><BR>
 
-	<table bgcolor="#4444bb" border=10><tr><td>
+	<table><tr><td>
     		<INPUT type="radio" name="sex" value="Male" checked> Male<BR>
     		<INPUT type="radio" name="sex" value="Female"> Female<BR>
 	</td></tr></table>
 
 	<P>
 
-    <INPUT type="submit" value="Send"> <INPUT type="reset">
+    <div><INPUT type="submit" value="Send"></div> <INPUT type="reset"></div>
     </P>
 </FORM>
 
 
 </BODY>
+</center>
 </HTML>
 
+<style>
+h2 {
+  color: Orange;
+  font-family: verdana;
+  font-size: 300%;
+
+}
+p  {
+  color: purple;
+  font-family: verdana;
+  font-size: 130%;
+}
+
+input[type=submit]{
+  border: 1px solid powderblue;
+  font-family: verdana;
+  color: red;
+  padding: 10px;
+  border-radius: 30px;
+  border-left: 6px solid red;
+  background-color: lightgrey;
+  text-decoration: none;
+
+}
+input[type=reset]{
+  border: 1px solid powderblue;
+  font-family: verdana;
+  color: red;
+  padding: 10px;
+  border-radius: 30px;
+  border-left: 6px solid red;
+  background-color: lightgrey;
+  text-decoration: none;
+
+}
+
+input[type=submit]:hover{
+    background-color: white;
+
+
+}
+input[type=reset]:hover{
+   background-color: white;
+
+}
+
+a:hover {
+  background-color: white;
+
+}
+
+table {
+  font-family: verdana;
+  color: purple;
+  padding: 10px;
+  border-radius: 10px;
+  text-decoration: none;
+  line-height: 200%;
+
+}
+
+body {
+  background: lightgreen;
+
+}
+</style>
