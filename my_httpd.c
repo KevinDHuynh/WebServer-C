@@ -122,8 +122,9 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 	int c;
 	FILE *file;
 	const char *dot = strrchr(fullPathToFile,'.');
-
+  //check for CGI Request
 	if((dot != NULL ) && (strcmp(dot,".cgi") == 0) ) {
+    //popen should be used for shell
 		file = popen(fullPathToFile, "r");
 		int  i = 0;
 		if (file) {
@@ -134,13 +135,11 @@ void SendDataBin(char *fileToSend, int sock, char *home, char *content) {
 		}
 		pclose(file);
 	  }
+  //should handle any other type of file
 	else {
 		file = fopen(fullPathToFile, "r");
-		int  i = 0;
 		if (file) {
-			while ((c = getc(file)) != EOF) {
-				buffer[i] = c;
-				i++;
+			while ((c = fread(buffer,sizeof(size_t),BUFFER_SIZE,file)) != EOF) {
 			}
 		}
 		fclose(file);
